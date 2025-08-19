@@ -125,7 +125,7 @@ $ cat pangu-*.out  #Finished training!
 #=========================================================================
 ##model output. Outputs pytorch file (.pt) will be in the checkpoints/ folder.
 
-$ ls -alh ../pangu/checkpoints  #for physicsnemo
+$ ls -alh ../pangu/outputs/checkpoints  #for physicsnemo
 
 rerun, delete all file in outputs directory.
 

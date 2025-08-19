@@ -5,8 +5,8 @@
 /data/test/*.h5
 /data/train/*.h5
 /data/zarr_data/*.nc
-/pangu/output
-/pangu-24/output
+/pangu/outputs
+/pangu-24/outputs
 /run/nvidia-modulus-24-12.sif
 /run/nvidia-physicsnemo-25-03.sif
 /run/*.err
