@@ -1,0 +1,39 @@
+# variables_config.py
+
+surface_vars = [
+    '2m_temperature',
+    '10m_u_component_of_wind',
+    '10m_v_component_of_wind',
+    'mean_sea_level_pressure'
+]
+
+upper_vars = [
+    'temperature',
+    'u_component_of_wind',
+    'v_component_of_wind',
+    'specific_humidity',
+    'geopotential'
+]
+
+pressure_levels = [
+    '1', '2', '3', '5', '7', '10', '20', '30', '50', '70', '100', '125', '150'
+]
+
+static_vars = [
+    'land_sea_mask',
+    'soil_type',
+    'geopotential'
+]
+
+zarr_store_path = "/lustre-home/gpu/home/research/nithiwat-r/pangu_weather/data/zarr_data"
+hdf5_store_path = "/lustre-home/gpu/home/research/nithiwat-r/pangu_weather/data"
+
+#start_train_year = 2000
+#end_train_year = 2004
+#test_years = [2005, 2006]
+#out_of_sample_years = [2007]
+start_train_year = 2000
+end_train_year = 2000
+test_years = [2001]
+out_of_sample_years = [2002]
+

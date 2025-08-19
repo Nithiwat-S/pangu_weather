@@ -1,0 +1,104 @@
+# download_era5.py
+import cdsapi
+import xarray as xr
+import os
+from variables_config import (
+    surface_vars, upper_vars, pressure_levels,
+    static_vars, zarr_store_path,
+    start_train_year, end_train_year,
+    test_years, out_of_sample_years
+)
+
+# Ensure output directory exists
+os.makedirs(zarr_store_path, exist_ok=True)
+
+c = cdsapi.Client()
+
+def download_surface(year):
+    monthly_files = []
+    #for month in range(1, 13):  ##full month
+    for month in range(1, 3):
+        out_file = os.path.join(zarr_store_path, f"surface_{year}_{month:02d}.nc")
+        if not os.path.exists(out_file):
+            print(f"Downloading surface {year}-{month:02d} ...")
+            c.retrieve(
+                'reanalysis-era5-single-levels',
+                {
+                    'product_type': 'reanalysis',
+                    'variable': surface_vars,
+                    'year': str(year),
+                    'month': f"{month:02d}",
+                    #'day': [f"{d:02d}" for d in range(1, 32)],  ##full date
+                    'day': [f"{d:02d}" for d in range(1, 2)],
+                    #'time': [f"{h:02d}:00" for h in range(0, 24)],  ##full time
+                    'time': [f"{h:02d}:00" for h in range(0, 24, 6)],
+                    'format': 'netcdf'
+                },
+                out_file
+            )
+        monthly_files.append(out_file)
+
+    # Merge 12 months into 1 file
+    yearly_file = os.path.join(zarr_store_path, f"surface_{year}.nc")
+    if not os.path.exists(yearly_file):
+        print(f"Merging surface data for {year} ...")
+        ds = xr.open_mfdataset(monthly_files, combine='by_coords')
+        ds.to_netcdf(yearly_file)
+        ds.close()
+
+def download_upper(year):
+    monthly_files = []
+    #for month in range(1, 13):  ##full month
+    for month in range(1, 3):
+        out_file = os.path.join(zarr_store_path, f"upper_{year}_{month:02d}.nc")
+        if not os.path.exists(out_file):
+            print(f"Downloading upper {year}-{month:02d} ...")
+            c.retrieve(
+                'reanalysis-era5-pressure-levels',
+                {
+                    'product_type': 'reanalysis',
+                    'variable': upper_vars,
+                    'pressure_level': pressure_levels,
+                    'year': str(year),
+                    'month': f"{month:02d}",
+                    #'day': [f"{d:02d}" for d in range(1, 32)],  ##full date
+                    'day': [f"{d:02d}" for d in range(1, 2)],
+                    #'time': [f"{h:02d}:00" for h in range(0, 24)],  ##full time
+                    'time': [f"{h:02d}:00" for h in range(0, 24, 6)],
+                    'format': 'netcdf'
+                },
+                out_file
+            )
+        monthly_files.append(out_file)
+
+    yearly_file = os.path.join(zarr_store_path, f"upper_{year}.nc")
+    if not os.path.exists(yearly_file):
+        print(f"Merging upper data for {year} ...")
+        ds = xr.open_mfdataset(monthly_files, combine='by_coords')
+        ds.to_netcdf(yearly_file)
+        ds.close()
+
+def download_static(year):
+    static_file = os.path.join(zarr_store_path, "static_masks.nc")
+    if not os.path.exists(static_file):
+        print("Downloading static masks ...")
+        c.retrieve(
+            'reanalysis-era5-single-levels',
+            {
+                'product_type': 'reanalysis',
+                'variable': static_vars,
+                'year': str(year),
+                'month': '01',
+                'day': '01',
+                'time': '00:00',
+                'format': 'netcdf'
+            },
+            static_file
+        )
+
+if __name__ == "__main__":
+    years_to_download = list(range(start_train_year, end_train_year + 1)) + test_years + out_of_sample_years
+    for y in years_to_download:
+        download_surface(y)
+        download_upper(y)
+    download_static(start_train_year)

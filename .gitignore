@@ -1,0 +1,9 @@
+/data
+/pangu/output
+/pangu-24/output
+/run/nvidia-modulus-24-12.sif
+/run/nvidia-physicsnemo-25-03.sif
+/run/*.err
+/run/*.out
+/dataset_download/__pycache__
+.ipynb_checkpoints
