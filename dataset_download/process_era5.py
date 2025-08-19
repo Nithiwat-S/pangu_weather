@@ -22,38 +22,41 @@ constant_mask_dir = os.path.join(hdf5_store_path, "constant_mask")
 os.makedirs(constant_mask_dir, exist_ok=True)
 
 def combine_data(surface_file, upper_file, static_file):
-    ds_surface = xr.open_dataset(surface_file)
-    ds_upper = xr.open_dataset(upper_file)
-    ds_static = xr.open_dataset(static_file)
+    with xr.open_dataset(surface_file) as ds_surface, \
+         xr.open_dataset(upper_file) as ds_upper, \
+         xr.open_dataset(static_file) as ds_static:    
 
-    # Combine into one data array
-    surface_data = xr.concat([ds_surface[var] for var in ds_surface.data_vars], dim="channel")
-    upper_data = xr.concat([ds_upper[var] for var in ds_upper.data_vars], dim="channel")
-    static_data = xr.concat([ds_static[var] for var in ds_static.data_vars], dim="channel")
+         # Combine into one data array
+         surface_data = xr.concat([ds_surface[var] for var in ds_surface.data_vars], dim="channel")
+         upper_data = xr.concat([ds_upper[var] for var in ds_upper.data_vars], dim="channel")
+         static_data = xr.concat([ds_static[var] for var in ds_static.data_vars], dim="channel")
 
-    # ---- move valid_time → time ----
-    if "valid_time" in surface_data.dims:
-        surface_data = surface_data.rename({"valid_time": "time"})
-    if "valid_time" in upper_data.dims:
-        upper_data = upper_data.rename({"valid_time": "time"})
-    if "valid_time" in static_data.dims:
-        static_data = static_data.rename({"valid_time": "time"})
+         # ---- move valid_time → time ----
+         if "valid_time" in surface_data.dims:
+             surface_data = surface_data.rename({"valid_time": "time"})
+         if "valid_time" in upper_data.dims:
+             upper_data = upper_data.rename({"valid_time": "time"})
+         if "valid_time" in static_data.dims:
+             static_data = static_data.rename({"valid_time": "time"})
         
-    # ---- expand static_data with time to surface_data ----
-    static_expanded = static_data.squeeze("time").expand_dims({"time": surface_data.time})
+         # ---- expand static_data with time to surface_data ----
+         static_expanded = static_data.squeeze("time").expand_dims({"time": surface_data.time})
 
-    # ---- flatten pressure_level with upper_data to channel ----
-    if "pressure_level" in upper_data.dims:
-        upper_reshaped = upper_data.stack(channel2=("channel", "pressure_level"))
-        ## drop channel with conflict
-        upper_reshaped = upper_reshaped.reset_index("channel2", drop=True)
-        upper_reshaped = upper_reshaped.rename({"channel2": "channel"})
-    else:
-        upper_reshaped = upper_data
+         # ---- flatten pressure_level with upper_data to channel ----
+         if "pressure_level" in upper_data.dims:
+             upper_reshaped = upper_data.stack(channel2=("channel", "pressure_level"))
+             ## drop channel with conflict
+             upper_reshaped = upper_reshaped.reset_index("channel2", drop=True)
+             upper_reshaped = upper_reshaped.rename({"channel2": "channel"})
+         else:
+             upper_reshaped = upper_data
 
-    # ---- concat along channel ----
-    full_data = xr.concat([surface_data, upper_reshaped, static_expanded], dim="channel")
-    return full_data.transpose("time", "channel", "latitude", "longitude").values
+         # ---- concat along channel ----
+         full_data = xr.concat([surface_data, upper_reshaped, static_expanded], dim="channel")
+         #ds_surface.close()
+         #ds_upper.close()
+         #ds_static.close()
+         return full_data.transpose("time", "channel", "latitude", "longitude").values
 
 def save_h5(filename, data):
     with h5py.File(filename, "w") as f:
@@ -101,11 +104,10 @@ if __name__ == "__main__":
     all_data = np.concatenate(all_datasets, axis=1)
     means = np.mean(all_data, axis=(0, 2, 3))
     stds = np.std(all_data, axis=(0, 2, 3))
-
+    
     # reshape to [1, C, 1, 1]
     means = means.reshape(1, -1, 1, 1)
     stds = stds.reshape(1, -1, 1, 1)
-
     np.save(os.path.join(stats_dir, "global_means.npy"), means)
     np.save(os.path.join(stats_dir, "global_stds.npy"), stds)
 
