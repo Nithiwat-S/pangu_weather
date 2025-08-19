@@ -1,4 +1,5 @@
-/data/constant_mask/*
+.gitignore
+/data/constant_mask/*.npy
 /data/out_of_sample/*
 /data/stats/*
 /data/test/*
