@@ -7,11 +7,11 @@ Downloading ECMWF Reanalysis 5 (ERA5) data via the Registry on Climet Data Store
 - pangu-24 => for pangu weather train script with modulus. 
 - run => for run train.
 ## Process below.
-#========================================================================= ##get code.
+#=============================================================== ##get code.
 $ git clone https://github.com/Nithiwat-S/pangu_weather.git
 
 $ cd pangu_weather
-#========================================================================= ##get data.
+#=============================================================== ##get data.
 
 $ module load Anaconda3/2024.10_gcc-11.5.0
 
