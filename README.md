@@ -71,7 +71,7 @@ $ ls -alh ../data/train/
 
 $ h5dump -H -A 0 ../data/train/2000.h5
 
-$ h5ls -v ../data/train/2000.h5/params  #and see Dataset {8/8, 72/72, 721/721, 1440/1440}
+$ h5ls -v ../data/train/2000.h5  #and see Dataset {8/8, 72/72, 721/721, 1440/1440}
 
 open h5 file on jupyterlab
 
