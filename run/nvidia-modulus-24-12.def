@@ -1,0 +1,5 @@
+BootStrap: docker
+From: nvcr.io/nvidia/modulus/modulus:24.12
+
+%post
+    pip install mlflow

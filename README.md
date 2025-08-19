@@ -61,7 +61,7 @@ $ cat download_era5.py.org
 
 $ cat download_era5.py  #change month from range(1, 13) to range(1, 3)
 
-$ python download.py  #see data file in download_path.
+$ python download_era5.py  #see data file in download_path.
 
 $ ls -alh ../data/zarr_data/
 

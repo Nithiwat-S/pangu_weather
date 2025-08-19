@@ -2,5 +2,7 @@ cdsapi
 xarray==2025.7.1
 h5py
 numpy==2.3.1
+netCDF4
+h5netcdf
 dask
 toolz

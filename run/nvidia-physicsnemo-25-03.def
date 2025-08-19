@@ -1,0 +1,5 @@
+BootStrap: docker
+From: nvcr.io/nvidia/physicsnemo/physicsnemo:25.03
+
+%post
+    pip install mlflow
