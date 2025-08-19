@@ -1,10 +1,10 @@
 .gitignore
 /data/constant_mask/*.npy
-/data/out_of_sample/*
-/data/stats/*
-/data/test/*
-/data/train/*
-/data/zarr_data/*
+/data/out_of_sample/*.h5
+/data/stats/*.npy
+/data/test/*.h5
+/data/train/*.h5
+/data/zarr_data/*.nc
 /pangu/output
 /pangu-24/output
 /run/nvidia-modulus-24-12.sif
