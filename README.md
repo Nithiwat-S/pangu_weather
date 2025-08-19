@@ -8,22 +8,29 @@ Downloading ECMWF Reanalysis 5 (ERA5) data via the Registry on Climet Data Store
 - run => for run train.
 ## Process below.
 #===============================================================
+
 ##create CDS API key and select CC-BY licence.
+
 goto https://cds.climate.copernicus.eu/profile
 
 $ vi ~/.cdsapirc
+
 url: https://cds.climate.copernicus.eu/api
+
 key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
 
 $ chmod 600 ~/.cdsapirc
 
-#===============================================================
+#=========================================================================
+
 ##get code.
 
 $ git clone https://github.com/Nithiwat-S/pangu_weather.git
 
 $ cd pangu_weather
-#===============================================================
+#=========================================================================
+
 ##get data.
 
 $ mkdir -p data/zarr_data
