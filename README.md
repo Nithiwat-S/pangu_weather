@@ -26,6 +26,8 @@ $ cd pangu_weather
 #===============================================================
 ##get data.
 
+$ mkdir -p data/zarr_data
+
 $ module load Anaconda3/2024.10_gcc-11.5.0
 
 $ source activate
@@ -54,33 +56,17 @@ $ cat download_era5.py  #change month from range(1, 13) to range(1, 3)
 
 $ python download.py  #see data file in download_path.
 
-$ ls -alh ../aws_era5_data/era5_data/
+$ ls -alh ../data/zarr_data/
 
-$ python format.py  #see data file in write_path.
+$ python process_era5.py  #see h5 data file in write_path.
 
-$ ls -alh ../aws_era5_data/data_processed/
+$ ls -alh ../data/train/
 
-$ mkdir -p ../data/train ../data/test ../data/stats
+$ h5dump -H -A 0 ../data/train/2000.h5
 
-$ mv ../aws_era5_data/data_processed/2010.h5 ../data/train/
+$ h5ls -v ../data/train/2000.h5/params  #and see Dataset {8/8, 72/72, 721/721, 1440/1440}
 
-$ mv ../aws_era5_data/data_processed/2011.h5 ../data/test/
-
-$ cat mean.py  #change path = "/mnt/fcn/data/train" and np.save path to ../data/stats.
-
-$ python mean.py
-
-$ cat std.py  #change path = "/mnt/fcn/data/train" and np.save path to ../data/stats.
-
-$ python std.py
-
-$ ls -la ../data/*/
-
-$ h5dump -H -A 0 ../data/train/2010.h5
-
-$ h5ls -v ../data/train/2010.h5/params  #and see Dataset {2/2}
-
-$ open h5 file on jupyterlab
+open h5 file on jupyterlab
 
 #=========================================================================
 ##config model (from https://github.com/NVIDIA/physicsnemo/tree/main/examples/weather/fcn_afno)
