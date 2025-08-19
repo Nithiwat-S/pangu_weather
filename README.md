@@ -7,12 +7,24 @@ Downloading ECMWF Reanalysis 5 (ERA5) data via the Registry on Climet Data Store
 - pangu-24 => for pangu weather train script with modulus. 
 - run => for run train.
 ## Process below.
-#=============================================================== ##get code.
+#===============================================================
+##create CDS API key and select CC-BY licence.
+goto https://cds.climate.copernicus.eu/profile
+
+$ vi ~/.cdsapirc
+url: https://cds.climate.copernicus.eu/api
+key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+$ chmod 600 ~/.cdsapirc
+
+#===============================================================
+##get code.
 
 $ git clone https://github.com/Nithiwat-S/pangu_weather.git
 
 $ cd pangu_weather
-#=============================================================== ##get data.
+#===============================================================
+##get data.
 
 $ module load Anaconda3/2024.10_gcc-11.5.0
 
@@ -22,26 +34,23 @@ $ conda env list
 
 $ conda env remove --name env_xxxx
 
-$ conda create -n env_era5-download python=3.11
+$ conda create -n env_cds-download python=3.11
 
-$ conda activate env_era5-download
+$ conda activate env_cds-download
 
-$ cd aws-era5-download-script
+$ cd dataset_download
+
 $ ls -al requirements.txt
 
 $ pip install -r requirements.txt
 
-$ mkdir -p ../aws_era5_data/era5_data
+$ cat variables_config.py.org
 
-$ mkdir -p ../aws_era5_data/data_processed
+$ cat variables_config.py  #change zarr_store_path, hdf5_store_path and your parameter.
 
-$ cat download.py.org
+$ cat download_era5.py.org
 
-$ cat download.py  #change months = ['01']
-
-$ cat config.yaml.org
-
-$ cat config.yaml  #change download_path, write_path and your parameter.
+$ cat download_era5.py  #change month from range(1, 13) to range(1, 3)
 
 $ python download.py  #see data file in download_path.
 

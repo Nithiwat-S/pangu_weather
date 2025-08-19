@@ -1,4 +1,9 @@
-/data
+/data/constant_mask/*
+/data/out_of_sample/*
+/data/stats/*
+/data/test/*
+/data/train/*
+/data/zarr_data/*
 /pangu/output
 /pangu-24/output
 /run/nvidia-modulus-24-12.sif
