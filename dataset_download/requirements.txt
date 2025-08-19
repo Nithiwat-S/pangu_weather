@@ -2,3 +2,5 @@ cdsapi
 xarray
 h5py
 numpy
+dask
+toolz

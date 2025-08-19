@@ -69,23 +69,21 @@ $ h5ls -v ../data/train/2000.h5/params  #and see Dataset {8/8, 72/72, 721/721, 1
 open h5 file on jupyterlab
 
 #=========================================================================
-##config model (from https://github.com/NVIDIA/physicsnemo/tree/main/examples/weather/fcn_afno)
+##config model (from https://github.com/NVIDIA/physicsnemo/tree/main/examples/weather/pangu_weather)
 
-$ cd ~/fourcastnet/
+$ cd ~/pangu_weather/
 
-$ cat fcn_afno/conf/config.yaml  #change
+$ cat pangu/conf/config_lite.yaml.org
 
-channels: from [0, 1, …, 19] to [0, 1] ;from Dataset
+$ cat pangu/conf/config_lite.yaml  #change
 
-max_epoch: from 80 to 1
+max_epoch: 100 to max_epoch: 1
 
-num_workers_train: from 8 to 1
+num_samples_per_year: 1456 to num_samples_per_year: 7
 
-num_workers_valida: from 8 to 1
+num_workers: 8 to num_workers: 1
 
-$ cat fcn_afno/train_era5.py  #change
-
-lr (learning rate): from 0.0005 to 0.000005
+num_samples_per_year: 4 num_samples_per_year: 1
 
 #=========================================================================
 ##create container and run.
@@ -94,7 +92,7 @@ $ module load apptainer/1.3.6_gcc-11.5.0
 
 $ apptainer --version
 
-$ cd ~/fourcastnet/run
+$ cd ~/pangu_weather/run/
 
 $ cat nvidia-physicsnemo-25-03.def
 
@@ -104,43 +102,26 @@ $ apptainer build nvidia-physicsnemo-25-03.sif nvidia-physicsnemo-25-03.def
 
 $ ls -alh
 
-$$$run physicsnemo-25----------
+#=========================================================================
+##train model
 
-    $ cat run_fcn_afno_1gpu1A100.sh  #edit work directory
+$ cat run_pangu_1gpu1A100.sh  #edit work directory
 
-    $ sbatch run_fcn_afno_1gpu1A100.sh
+$ sbatch run_pangu_1gpu1A100.sh
 
-    $ squeue
+$ squeue
 
-    $ ls -alh
+$ ls -alh
 
-    $ cat fcn_afno-*.out  #Finished training!
-
-$$$run modulus-24----------
-
-    $ rsync -av --progress /lustre-home/gpu/home/research/nithiwat-r/fourcastnet/run/nvidia-modulus-24-12.sif .
-
-    $ cat run_fcn_afno_1gpu1V100.sh  #edit work directory
-
-    $ sbatch run_fcn_afno_1gpu1V100.sh
-
-    $ squeue
-
-    $ ls -alh
-
-    $ cat fcn_afno-*.out  #Finished training!
+$ cat pangu-*.out  #Finished training!
 
 #=========================================================================
 ##model output. Outputs pytorch file (.pt) will be in the checkpoints/ folder.
 
-$ ls -alh ../fcn_afno/checkpoints  #for physicsnemo
-
-$ ls -alh ../fcn_afno-24/checkpoints  #for modulus
+$ ls -alh ../pangu/checkpoints  #for physicsnemo
 
 rerun, delete all file in outputs directory.
 
-$ rm -rf ../fcn_afno/outputs/*
+$ rm -rf ../pangu/outputs/*
 
-$ rm -rf ../fcn_afno-24/outputs/*
-
-$ sbatch run_fcn_afno_1gpu1A100.sh
+$ sbatch run_pangu_1gpu1A100.sh
